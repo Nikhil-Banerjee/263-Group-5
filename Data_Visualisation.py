@@ -1,5 +1,4 @@
 import pandas as pd
-import numpy as np
 import os
 from matplotlib import pyplot as plt
 import datetime
@@ -58,20 +57,17 @@ g2 = f2.add_gridspec(3, hspace=0.1)
 ax2 = g2.subplots(sharex=True)
 f2.suptitle('Experiment 2 Data')
 
-ax2[0].plot(dfs2merged['date'], dfs2merged['steam rate (t/d)'], marker = 'o', linestyle = '-', color = steamCol ,fillstyle = 'none' ,label = 'Steam Rate (t/d)')
+ax2[0].plot(dfs2merged['date'], dfs2merged['steam rate (t/d)'], marker = 'o', linestyle = 'none', color = steamCol ,fillstyle = 'none' ,label = 'Steam Rate (t/d)')
 ax2[0].set_ylabel('Steam Rate (t/d)')
 ax2[0].legend()
 
-
-
-
-l2_1a = ax2[1].plot(dfs2merged['date'], dfs2merged['water rate (m^3/day)'], marker = 'x', linestyle = '-', color = waterCol, fillstyle = 'none', label = 'Water Rate (m^3/day)')
+l2_1a = ax2[1].plot(dfs2merged['date'], dfs2merged['water rate (m^3/day)'], marker = 'x', linestyle = 'none', color = waterCol, fillstyle = 'none', label = 'Water Rate (m^3/day)')
 ax2[1].set_ylabel("Water Rate (m^3/day)", color = waterCol)
 ax2[1].tick_params(axis='y', colors = waterCol)
 ax2[1].title.set_color(waterCol)
 
 ax2twin1 = ax2[1].twinx()
-l2_1b = ax2twin1.plot(dfs2merged['date'], dfs2merged['oil rate (m^3/day)'], marker = '^', linestyle = '-', color = oilCol, fillstyle = 'none',label = 'oil rate (m^3/day)')
+l2_1b = ax2twin1.plot(dfs2merged['date'], dfs2merged['oil rate (m^3/day)'], marker = '^', linestyle = 'none', color = oilCol, fillstyle = 'none',label = 'oil rate (m^3/day)')
 ax2twin1.set_ylabel("Oil Rate (m^3/day)", color = oilCol)
 ax2twin1.tick_params(axis='y', colors = oilCol)
 ax2twin1.title.set_color(oilCol)
@@ -98,25 +94,24 @@ ax2[2].legend(l2_2, lab2_2)
 [ax.grid() for ax in ax2] 
 
 
-
 # exp3 plots
 f3 = plt.figure()
 g3 = f3.add_gridspec(3, hspace=0.1)
 ax3 = g3.subplots(sharex=True)
 f3.suptitle('Experiment 3 Data')
 
-ax3[0].plot(dfs3merged['date'], dfs3merged['steam rate (t/d)'], marker = 'o', linestyle = '-', color = steamCol,fillstyle = 'none' ,label = 'Steam Rate (t/d)')
+ax3[0].plot(dfs3merged['date'], dfs3merged['steam rate (t/d)'], marker = 'o', linestyle = 'none', color = steamCol,fillstyle = 'none' ,label = 'Steam Rate (t/d)')
 ax3[0].set_ylabel('Steam Rate (t/d)')
 ax3[0].legend()
 
 
-l3_1a = ax3[1].plot(dfs3merged['date'], dfs3merged['water rate (m^3/d)'], marker = 'x', linestyle = '-', color = waterCol, fillstyle = 'none', label = 'Water Rate (m^3/day)')
+l3_1a = ax3[1].plot(dfs3merged['date'], dfs3merged['water rate (m^3/d)'], marker = 'x', linestyle = 'none', color = waterCol, fillstyle = 'none', label = 'Water Rate (m^3/day)')
 ax3[1].set_ylabel("Water Rate (m^3/day)", color = waterCol)
 ax3[1].tick_params(axis='y', colors = waterCol)
 ax3[1].title.set_color(waterCol)
 
 ax3twin1 = ax3[1].twinx()
-l3_1b = ax3twin1.plot(dfs3merged['date'], dfs3merged['oil rate (m^3/d)'], marker = '^', linestyle = '-', color = oilCol, fillstyle = 'none',label = 'oil rate (m^3/day)')
+l3_1b = ax3twin1.plot(dfs3merged['date'], dfs3merged['oil rate (m^3/d)'], marker = '^', linestyle = 'none', color = oilCol, fillstyle = 'none',label = 'oil rate (m^3/day)')
 ax3twin1.set_ylabel("Oil Rate (m^3/day)", color = oilCol)
 ax3twin1.tick_params(axis='y', colors = oilCol)
 ax3twin1.title.set_color(oilCol)
