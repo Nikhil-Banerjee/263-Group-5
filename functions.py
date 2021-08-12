@@ -1,4 +1,6 @@
-
+import pandas as pd
+from os import sep
+from functools import reduce
 
 
 def odePressure(t, P, a, b, q, P0):
@@ -111,3 +113,23 @@ def Tprime(t, P, T, P0, T0):
         return T
     else:
         return T0
+
+
+def loadGivenData():
+    oil = pd.read_csv("data" + sep + "tr_oil.txt")
+    pressure = pd.read_csv("data" + sep + "tr_p.txt")
+    steam = pd.read_csv("data" + sep + "tr_steam.txt")
+    temp = pd.read_csv("data" + sep + "tr_T.txt")
+    water = pd.read_csv("data" + sep + "tr_water.txt")
+
+    dataArray = [oil, pressure, steam, temp, water]
+    dataArray = [df.set_index('days') for df in dataArray]
+
+    data = reduce(lambda left, right: pd.merge(left, right, on = ['days'], how = 'outer'), dataArray)
+
+    return data
+
+# if __name__ == "__main__":
+#     data = loadGivenData()
+
+
