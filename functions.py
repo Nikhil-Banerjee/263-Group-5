@@ -39,8 +39,9 @@ def odePressure(t, P, a, b, q, P0):
     dPdt = -a*q - b*(P - P0)
     return dPdt
 
-def odeTemp(t, T, a, b, P, qsteam, T0, P0, M0, Tsteam, Tdash, bT):
+def odeTemp(t, T, P, T0, P0, Tsteam, Tdash, a, b, c):
     ''' Return the derivative dT/dt at a time, t for given parameters.
+        dT/dt = a(Tsteam - T) - b(P - P0)(Tdash - T) - c(T - T0)
 
         Parameters:
         -----------
@@ -48,27 +49,20 @@ def odeTemp(t, T, a, b, P, qsteam, T0, P0, M0, Tsteam, Tdash, bT):
             Independent variable.
         T : float
             Dependent varaible.
-        a : float
-            Source/sink strength parameter.
-        b : float
-            Recharge strength parameter.
         P : float
             Pressure value.
-        qsteam : float
-            steam rate
         T0 : float
             initial Temperature
         P0 : float
             initial Pressure
-        M0 : float
-            initial Mass
-        Tsteam : float
-            steam Temperature?
         Tdash : float
             function returning value for T'(t)
-        bT : float
-            conduction parameter
-
+        a : float
+            superparameter 1.
+        b : float
+            superparameter 2.
+        c: float
+            superparameter 3.
         Returns:
         --------
         dTdt : float
@@ -80,11 +74,11 @@ def odeTemp(t, T, a, b, P, qsteam, T0, P0, M0, Tsteam, Tdash, bT):
 
         Examples:
         ---------
-        >>> 
+        >>> ADD EXAMPLES
 
     '''
-    Tprime = Tdash(t, P, P0)
-    dTdt = qsteam/M0 * (Tsteam - T) - b/(a*M0) * (P - P0) * (Tprime - T0) - bT*(T - T0)
+    Tprime = Tdash(t, P, T, P0, T0)
+    dTdt = a*(Tsteam - T) - b*(P - P0)*(Tprime - T0) - c*(T - T0)
 
     return dTdt
 
@@ -125,11 +119,15 @@ def loadGivenData():
     dataArray = [oil, pressure, steam, temp, water]
     dataArray = [df.set_index('days') for df in dataArray]
 
-    data = reduce(lambda left, right: pd.merge(left, right, on = ['days'], how = 'outer'), dataArray)
+    data = reduce(lambda left, right: pd.merge(left, right, on = ['days'], how = 'outer'), dataArray).sort_index()
 
     return data
 
-# if __name__ == "__main__":
-#     data = loadGivenData()
+def objective():
+
+    pass
+
+if __name__ == "__main__":
+    data = loadGivenData()
 
 
