@@ -48,6 +48,7 @@ def odePressure(X, a, b, P0):
 
     return dPdt
 
+<<<<<<< HEAD
 
 def modelPressure(X, a, b, P0):
 
@@ -82,10 +83,15 @@ def readPressureData():
 
 
 def odeTemp(X, a, b, P0, T0, M0, Tdash, bT):
+=======
+def odeTemp(t, T, P, T0, P0, Tsteam, Tdash, a, b, c):
+>>>>>>> e6f2fe293e03e60116d3362be114fb801cb87d1a
     ''' Return the derivative dT/dt at a time, t for given parameters.
+        dT/dt = a(Tsteam - T) - b(P - P0)(Tdash - T) - c(T - T0)
 
         Parameters:
         -----------
+<<<<<<< HEAD
         X : float
             independent variables of form : (t, P, T, qw, qo, qs)
             where:
@@ -99,17 +105,31 @@ def odeTemp(X, a, b, P0, T0, M0, Tdash, bT):
             Source/sink strength parameter.
         b : float
             Recharge strength parameter.
+=======
+        t : float
+            Independent variable.
+        T : float
+            Dependent varaible.
+        P : float
+            Pressure value.
+>>>>>>> e6f2fe293e03e60116d3362be114fb801cb87d1a
         T0 : float
             initial Temperature
         P0 : float
             initial Pressure
+<<<<<<< HEAD
         M0 : float
             initial Mass
+=======
+>>>>>>> e6f2fe293e03e60116d3362be114fb801cb87d1a
         Tdash : float
             function returning value for T'(t)
-        bT : float
-            conduction parameter
-
+        a : float
+            superparameter 1.
+        b : float
+            superparameter 2.
+        c: float
+            superparameter 3.
         Returns:
         --------
         dTdt : float
@@ -121,11 +141,16 @@ def odeTemp(X, a, b, P0, T0, M0, Tdash, bT):
 
         Examples:
         ---------
-        >>> 
+        >>> ADD EXAMPLES
 
     '''
+<<<<<<< HEAD
     t, P, T, qw, qo, qs = X
     Tprime = Tdash(t, P, P0)
+=======
+    Tprime = Tdash(t, P, T, P0, T0)
+    dTdt = a*(Tsteam - T) - b*(P - P0)*(Tprime - T0) - c*(T - T0)
+>>>>>>> e6f2fe293e03e60116d3362be114fb801cb87d1a
 
     dTdt = qs/M0 * (Tsteam - T) - b/(a*M0) * (P - P0) * (Tprime - T0) - bT*(T - T0)
     return dTdt
@@ -254,6 +279,7 @@ def loadGivenData():
     dataArray = [oil, pressure, steam, temp, water]
     dataArray = [df.set_index('days') for df in dataArray]
 
+<<<<<<< HEAD
     data = reduce(lambda left, right: pd.merge(left, right, on = ['days'], how = 'outer'), dataArray).sort_index() 
 
     data = data.interpolate(method='index')
@@ -266,5 +292,17 @@ def loadGivenData():
 if __name__ == "__main__":
     data = loadGivenData()
     fitPressure()
+=======
+    data = reduce(lambda left, right: pd.merge(left, right, on = ['days'], how = 'outer'), dataArray).sort_index()
+
+    return data
+
+def objective():
+
+    pass
+
+if __name__ == "__main__":
+    data = loadGivenData()
+>>>>>>> e6f2fe293e03e60116d3362be114fb801cb87d1a
 
 
