@@ -139,9 +139,6 @@ def loadData():
 
     return oil, pressure, steam, temp, water
 
-def objective():
-
-    pass
 
 def interpolate(values,t):
 
@@ -194,7 +191,7 @@ def  solve_ode(f, t, dt, x0, pars):
         x[i+1]=dt*(k1+k2)*0.5+x1[i]
     return t,x  
 
-def solve_tempode(f,t,dt,T0,a,b,c,p,p0):
+def solve_tempode(f,t,dt,T0,p,a,b,c,p0):
     Tsteam=260
     oil, pressure, steam, temp, water=loadData()    
     q=interpolate(steam,t)   
@@ -205,7 +202,7 @@ def solve_tempode(f,t,dt,T0,a,b,c,p,p0):
     x[0]=T0
     # improved euler method
     for i in range(len(t)-1):
-        k1=f(t[i], x1[i], p[i], T0, p0, Tsteam, a, b, c,q[i])
+        k1=f(t[i], x1[i], p[i], T0, p0, Tsteam, a, b, c, q[i])
         x1[i+1]=k1*dt+x1[i]
         k2=f(t[i+1], x1[i+1], p[i+1], T0, p0, Tsteam, a, b, c,q[i+1])
         x[i+1]=dt*(k1+k2)*0.5+x1[i]
@@ -224,39 +221,34 @@ def fit_pressure(t,a,b,p0):
     t,p=solve_ode(odePressure,t,t[1]-t[0],p0,[a,b,p0])
     return p
 
-def fit_temp(t,a,b,c,T0):
+def fit_temp(t, a, b, c, T0, P0):
     #T0=170
-    p0=8.60098803e+02
-    pars=2.71440346e-01,7.97401357e-02,8.60098803e+02
-    p=solve_ode(odePressure,t,t[1]-t[0],p0,pars)
+    # p=solve_ode(odePressure,t,t[1]-t[0],p0,ParsdP)
     
-    x=solve_tempode(odeTemp,t,t[1]-t[0],T0,a,b,c,p[1],p0)
+    x=solve_tempode(odeTemp,t,t[1]-t[0],T0,p[1],a,b,c,P0)
     return x    
 
 if __name__ == "__main__":
     data = loadGivenData()
     oil, pressure, steam, temp, water=loadData()
-    
-    t=np.linspace(0,217,1000)
-   
-    #a=0.25,b=0.05   
-    a,b=2.71440346e-01, 7.97401357e-02
-    p0=8.60098803e+02
-    pars=a,b,p0
-    p=solve_ode(odePressure,t,t[1]-t[0],p0,pars)
-    print('')
 
+    t=np.linspace(0,217,1000)
+
+    # Initial guesses for pressure parameters.
+    a, b = 0.2, 0.05
+    p0 = pressure[1][0]
+
+    parsFoundP, _ = curve_fit(fit_pressure, pressure[0], pressure[1],[a, b, p0])
+
+    p = solve_ode(odePressure, t, t[1] - t[0], p0, parsFoundP)
+
+    pressureMisfit = interpolate(p, pressure[0]) - pressure[1]
     
-    pc,_ = curve_fit(fit_pressure, pressure[0], pressure[1],[0.200,0.05,100])
-    #print(pc)
-    pressure_misfit=interpolate(p,pressure[0])-pressure[1]
-    
-    '''
     f,axe = plt.subplots(1,2)
-    axe[0].plot(t,p[1],'k--',label='a=2.714e-01\nb=7.974e-02')
+    axe[0].plot(t,p[1],'k--',label="a = {:.2f}\nb = {:.2f}\nP0 = {:.2f}".format(parsFoundP[0], parsFoundP[1], parsFoundP[2]))
     axe[0].plot(pressure[0],pressure[1],'r.',label='data')
-    axe[1].plot(pressure[0],pressure_misfit,'kx')
-    axe[1].plot(pressure[0],pressure_misfit*0,'r--')
+    axe[1].plot(pressure[0],pressureMisfit,'kx')
+    axe[1].plot(pressure[0],np.zeros(len(pressureMisfit)),'r--')
     axe[0].set_ylabel('Pressure [kPa]')
     axe[0].set_xlabel('time [s]')
     axe[0].set_title('Comparison of model to observed \n pressure value')
@@ -264,34 +256,32 @@ if __name__ == "__main__":
     axe[1].set_ylabel('pressure misfit [kpa]')
     axe[1].set_xlabel('time [s]')
     axe[1].set_title('Best fit LMP model')
-    plt.show()
-    '''
+    
 
-    T0=1.64084656e+02
-    Tsteam=260
-    a,b,c=0.01,0.001,0.001
-    a,b,c=2.04561621e-04, 5.06427283e-04 ,5.86287491e-02
+    Tsteam = 260
+    # Initial guesses for temperature parameters.
+    T0 = temp[1][0]
+    a,b,c=0.0001,0.0001,0.01
 
+    parsFoundT, _ = curve_fit(lambda t,a,b,c,T0: fit_temp(t,a,b,c,T0,parsFoundP[2]), temp[0], temp[1],[a,b,c,T0])
+    print(parsFoundT)
 
-
-    x=solve_tempode(odeTemp,t,t[1]-t[0],T0,a,b,c,p[1],p0)
-
-    tc,_ = curve_fit(fit_temp, temp[0], temp[1],[2.04561621e-04, 5.06427283e-04 ,5.86287491e-02,1.56849330e+02])
-    print(tc)
+    x=solve_tempode(odeTemp, t, t[1] - t[0], parsFoundT[3], p[1], a = parsFoundT[0],b = parsFoundT[1],c = parsFoundT[2], p0 = parsFoundP[2])
 
     temp_misfit=interpolate([t,x],temp[0])-temp[1]
     
-    f,axe = plt.subplots(1,2)
-    axe[0].plot(t,x,'k--',label='a=2.045e-04\nb=5.064e-04\nc=5.862e-02')
-    axe[0].plot(temp[0],temp[1],'r.',label='data')
-    axe[1].plot(temp[0][0:24],temp_misfit[0:24],'kx')
-    axe[1].plot(temp[0],temp[0]*0,'r--')
-    axe[0].set_ylabel('temperature [°C]')
-    axe[0].set_xlabel('time [s]')
-    axe[0].set_title('Comparison of model to observed \n temperature value')
-    axe[0].legend(loc='upper right',prop={'size': 7})
-    axe[1].set_ylabel('temperature misfit [°C]')
-    axe[1].set_xlabel('time [s]')
-    axe[1].set_title('Best fit LMP model')
+    f2,axe2 = plt.subplots(1,2)
+    axe2[0].plot(t,x,'k--',label='a = {parsFoundT[0]:.2f}\nb = {parsFoundT[1]:.2f}\nc = {parsFoundT[2]:.2f}')
+    axe2[0].plot(temp[0],temp[1],'r.',label='data')
+    axe2[1].plot(temp[0],temp_misfit,'kx')
+    axe2[1].plot(temp[0],temp[0]*0,'r--')
+    axe2[0].set_ylabel('temperature [°C]')
+    axe2[0].set_xlabel('time [s]')
+    axe2[0].set_title('Comparison of model to observed \n temperature value')
+    axe2[0].legend(loc='upper right',prop={'size': 7})
+    axe2[1].set_ylabel('temperature misfit [°C]')
+    axe2[1].set_xlabel('time [s]')
+    axe2[1].set_title('Best fit LMP model')
+
     plt.show()
     
