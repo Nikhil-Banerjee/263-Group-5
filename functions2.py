@@ -111,7 +111,6 @@ def Tprime(t, P, T, P0, T0):
     else:  
         return T0
 
-
 def loadGivenData():
     oil = pd.read_csv("data" + sep + "tr_oil.txt")
     pressure = pd.read_csv("data" + sep + "tr_p.txt")
@@ -139,12 +138,10 @@ def loadData():
 
     return oil, pressure, steam, temp, water
 
-
 def odeSolnAnalytic(t):
 
     soln = np.exp(-t)
     return soln
-
 
 def interpolate(values,t):
 
@@ -179,7 +176,6 @@ def qs_scenario1(t):
     q = np.where(t <= 280.28, 1000, 0)
     return q
     
-
 def q_scenario1(t):
     # Steam injection of 1000 tonnes per day for 60 days, followed by 90 day production periods.
     q = np.where(t <= 280.28, -1000, 80.637)
@@ -207,12 +203,10 @@ def qs_scenario4(t):
     q = np.where(t <= 280.28, 2000, 0)
     return q
 
-
 def q_scenario4(t):
     # Steam injection of 2000 tonnes per day for 60 days, followed by 90 day production periods.
     q = np.where(t <= 280.28, -2000, 80.637)
     return q
-
 
 def  solve_ode(f, t, dt, x0, pars, qmodel = q_term):
     '''solve ODE numerically with forcing term is altering
@@ -250,7 +244,6 @@ def qs(t):
 
     return interpolate(steam,t)
 
-
 def solve_tempode(f,t,dt,T0,p,a,b,c,p0, qmodel = qs):
     Tsteam=260 
     q = qmodel(t) 
@@ -268,9 +261,6 @@ def solve_tempode(f,t,dt,T0,p,a,b,c,p0, qmodel = qs):
 
     return x
 
-
-
-
 def fit_pressure(t,a,b,p0):
     t,p=solve_ode(odePressure,t,t[1]-t[0],p0,[a,b,p0])
     return p
@@ -281,6 +271,7 @@ def fit_temp(t, a, b, c, T0, P0):
     
     x=solve_tempode(odeTemp,t,t[1]-t[0],T0,p[1],a,b,c,P0)
     return x    
+
 
 if __name__ == "__main__":
     data = loadGivenData()
@@ -370,8 +361,7 @@ if __name__ == "__main__":
     ax3[1].set_ylabel('Pressure (Pa)')
     ax3[1].set_xlabel('time (days)')
 
-    # Forecasts
-
+    # Forecasts:
     # Forecast 1
     # Tood Energy proposal of steam injection of 1000 tonnes per day 60 days, followed by 90 day production periods.
     ts = np.linspace(t1[-1], 370.28, 100)
@@ -406,12 +396,9 @@ if __name__ == "__main__":
     ax4.legend()
     ax4.text(x = 225, y = 130, s = 'All forecasted injection phases are 60 days followed by 90 day production periods.', bbox = dict(facecolor='none', edgecolor='black', pad=5.0))
     ax4.set_xlim([t1[0], ts[-1]])
+    ax4.set_title('What-if scenarios')
     ax4.set_xlabel('time (days)')
     ax4.set_ylabel('Temperature (°C)')
-
-
-
-
 
     plt.show()
     
