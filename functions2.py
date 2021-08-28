@@ -42,7 +42,7 @@ def odePressure(t, P, q, a, b, P0):
     dPdt = -a*q - b*(P - P0)
     return dPdt
 
-def odeTemp(t, T, P, T0, P0, Tsteam, a, b, c,q):
+def odeTemp(t, T, P, T0, P0, Tsteam, a, b, c, q, M):
     ''' Return the derivative dT/dt at a time, t for given parameters.
         dT/dt = a*q*(Tsteam - T) - b(P - P0)(Tdash - T) - c(T - T0)
 
@@ -61,11 +61,14 @@ def odeTemp(t, T, P, T0, P0, Tsteam, a, b, c,q):
         Tdash : float
             function returning values for T'(t)
         a : float
-            superparameter 1.
+            extraction/injection parameter
         b : float
-            superparameter 2.
+            recharge parameter
         c: float
-            superparameter 3.
+            conduction parameter
+        M : float
+            initial mass
+
         Returns:
         --------
         dTdt : float
@@ -80,8 +83,8 @@ def odeTemp(t, T, P, T0, P0, Tsteam, a, b, c,q):
         >>> ADD EXAMPLES
 
     '''
-    dTdt = a*q*(Tsteam - T) - b*(P - P0)*(Tprime(t, P, T, P0, T0) - T) - c*(T - T0)
-    #dTdt = a*q*(Tsteam - T) - b*(P - P0)*T - c*(T - T0)
+    dTdt = q/M*(Tsteam - T) - b/(a*M)*(P - P0)*(Tprime(t, P, T, P0, T0) - T) - c*(T - T0)
+    #dTdt = q/M*(Tsteam - T) - b/(a*M)*(P - P0)*T - c*(T - T0)
 
     return dTdt
 
@@ -244,7 +247,7 @@ def qs(t):
 
     return interpolate(steam,t)
 
-def solve_tempode(f,t,dt,T0,p,a,b,c,p0, qmodel = qs):
+def solve_tempode(f,t,dt,T0,p,a,b,c,p0, M, qmodel = qs):
     Tsteam=260 
     q = qmodel(t) 
 
@@ -254,9 +257,9 @@ def solve_tempode(f,t,dt,T0,p,a,b,c,p0, qmodel = qs):
     x[0]=T0
     # improved euler method
     for i in range(len(t)-1):
-        k1=f(t[i], x1[i], p[i], T0, p0, Tsteam, a, b, c, q[i])
+        k1=f(t[i], x1[i], p[i], T0, p0, Tsteam, a, b, c, q[i], M)
         x1[i+1]=k1*dt+x1[i]
-        k2=f(t[i+1], x1[i+1], p[i+1], T0, p0, Tsteam, a, b, c,q[i+1])
+        k2=f(t[i+1], x1[i+1], p[i+1], T0, p0, Tsteam, a, b, c,q[i+1], M)
         x[i+1]=dt*(k1+k2)*0.5+x1[i]
 
     return x
@@ -265,11 +268,11 @@ def fit_pressure(t,a,b,p0):
     t,p=solve_ode(odePressure,t,t[1]-t[0],p0,[a,b,p0])
     return p
 
-def fit_temp(t, a, b, c, T0, P0):
+def fit_temp(t, a, b, c, T0, P0, M):
     #T0=170
     # p=solve_ode(odePressure,t,t[1]-t[0],p0,ParsdP)
     
-    x=solve_tempode(odeTemp,t,t[1]-t[0],T0,p[1],a,b,c,P0)
+    x=solve_tempode(odeTemp,t,t[1]-t[0],T0,p[1],a,b,c,P0,M)
     return x    
 
 
@@ -284,11 +287,14 @@ if __name__ == "__main__":
     a, b = 0.2, 0.05
     p0 = pressure[1][0]
 
+    
+
     parsFoundP, _ = curve_fit(fit_pressure, pressure[0], pressure[1],[a, b, p0])
+    print(parsFoundP)
 
     p = solve_ode(odePressure, t1, t1[1] - t1[0], p0, parsFoundP)
 
-    pressureMisfit = interpolate(p, pressure[0]) - pressure[1]
+    pressureMisfit = pressure[1] - interpolate(p, pressure[0])
     
     f1,ax1 = plt.subplots(1,2)
     ax1[0].plot(t1,p[1],'k--',label="a = {:.2f}\nb = {:.2f}\nP0 = {:.2f}".format(parsFoundP[0], parsFoundP[1], parsFoundP[2]))
@@ -309,17 +315,19 @@ if __name__ == "__main__":
     Tsteam = 260
     # Initial guesses for temperature parameters.
     T0 = temp[1][0]
-    a,b,c = 0.0001, 0.0001, 0.01
+    c = 0.07
+    M = 10000
 
-    parsFoundT, _ = curve_fit(lambda t,a,b,c,T0: fit_temp(t,a,b,c,T0,parsFoundP[2]), temp[0], temp[1],[a,b,c,T0])
+    parsFoundT, _ = curve_fit(lambda t,c,M,T0: fit_temp(t,parsFoundP[0],parsFoundP[1],c,T0,parsFoundP[2],M=M), temp[0], temp[1],[c,M,T0])
     print(parsFoundT)
 
-    T=solve_tempode(odeTemp, t1, t1[1] - t1[0], parsFoundT[3], p[1], a = parsFoundT[0],b = parsFoundT[1],c = parsFoundT[2], p0 = parsFoundP[2])
+    T=solve_tempode(odeTemp, t1, t1[1] - t1[0], parsFoundT[2], p[1], a = parsFoundP[0],b = parsFoundP[1],c = parsFoundT[0], p0 = parsFoundP[2], M = parsFoundT[1])
 
-    temp_misfit=interpolate([t1,T],temp[0])-temp[1]
+
+    temp_misfit = temp[1] - interpolate([t1,T],temp[0])
     
     f2,ax2 = plt.subplots(1,2)
-    ax2[0].plot(t1,T,'k--',label='a = {:3f}\nb = {:3f}\nc = {:3f}'.format(parsFoundT[0],parsFoundT[1],parsFoundT[2]))
+    ax2[0].plot(t1,T,'k--',label='c = {:3f}\nM = {:3f}\nT0 = {:3f}'.format(parsFoundT[0],parsFoundT[1],parsFoundT[2]))
     ax2[0].plot(temp[0],temp[1],'r.',label='data')
     ax2[0].plot(t1, np.ones(len(t1)) * 240, 'g-', label = 'Toxic contaminant dissociation temperature')
     ax2[1].plot(temp[0],temp_misfit,'kx')
@@ -366,22 +374,22 @@ if __name__ == "__main__":
     # Tood Energy proposal of steam injection of 1000 tonnes per day 60 days, followed by 90 day production periods.
     ts = np.linspace(t1[-1], 370.28, 100)
     FP1 = solve_ode(odePressure, ts, ts[1] - ts[0], p[1][-1], parsFoundP, q_scenario1) 
-    FT1 = solve_tempode(odeTemp, ts, ts[1] - ts[0], parsFoundT[3], FP1[1], parsFoundT[0], parsFoundT[1], parsFoundT[2], parsFoundP[2], qs_scenario1)
+    FT1 = solve_tempode(odeTemp, ts, ts[1] - ts[0], parsFoundT[2], FP1[1], parsFoundP[0], parsFoundP[1], parsFoundT[0], parsFoundP[2], parsFoundT[1], qs_scenario1)
 
     # Forecast 2
     # No steam injection
     FP2 = solve_ode(odePressure, ts, ts[1] - ts[0], p[1][-1], parsFoundP, q_scenario2)
-    FT2 = solve_tempode(odeTemp, ts, ts[1] - ts[0], parsFoundT[3], FP2[1], parsFoundT[0], parsFoundT[1], parsFoundT[2], parsFoundP[2], qs_scenario2)
+    FT2 = solve_tempode(odeTemp, ts, ts[1] - ts[0], parsFoundT[2], FP2[1], parsFoundP[0], parsFoundP[1], parsFoundT[0], parsFoundP[2], parsFoundT[1], qs_scenario2)
 
     # Forecast 3
     # Current steam injection of 460 tonnes per day for 60 days, followed by 90 day production periods.
     FP3 = solve_ode(odePressure, ts, ts[1] - ts[0], p[1][-1], parsFoundP, q_scenario3)
-    FT3 = solve_tempode(odeTemp, ts, ts[1] - ts[0], parsFoundT[3], FP3[1], parsFoundT[0], parsFoundT[1], parsFoundT[2], parsFoundP[2], qs_scenario3)
+    FT3 = solve_tempode(odeTemp, ts, ts[1] - ts[0], parsFoundT[2], FP3[1], parsFoundP[0], parsFoundP[1], parsFoundT[0], parsFoundP[2], parsFoundT[1], qs_scenario3)
 
     # Forecast 4 
     # steam injection of 2000 tonnes per day 60 days, followed by 90 day production periods.
     FP4 = solve_ode(odePressure, ts, ts[1] - ts[0], p[1][-1], parsFoundP, q_scenario4)
-    FT4 = solve_tempode(odeTemp, ts, ts[1] - ts[0], parsFoundT[3], FP4[1], parsFoundT[0], parsFoundT[1], parsFoundT[2], parsFoundP[2], qs_scenario4)
+    FT4 = solve_tempode(odeTemp, ts, ts[1] - ts[0], parsFoundT[2], FP4[1], parsFoundP[0], parsFoundP[1], parsFoundT[0], parsFoundP[2], parsFoundT[1], qs_scenario4)
 
     # Forecast plot (only shows temperature plot)
     tOverall = np.arange(t1[0],ts[-1])
