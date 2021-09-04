@@ -133,4 +133,3 @@ def benchmark():
     axe.set_xlabel('1/h')
     axe.set_title('Convergence test for Improved Euler')
     axe.set_ylim([1.7e-5, 20e-5])
-    plt.show()
