@@ -309,7 +309,7 @@ if __name__ == "__main__":
 
 
     # Forecasts:
-    tf = np.linspace(t1[-1], 370, 500)
+    tf = np.linspace(0, 370, 500)
     # Forecast 1
     # Tood Energy proposal of steam injection of 1000 tonnes per day 60 days, followed by 90 day production periods.
     Qf1 = Qterms(1000)
@@ -351,11 +351,26 @@ if __name__ == "__main__":
     ax4.plot(tf[startForc:], FT2[startForc:], 'g-', label = 'Steam injection = 0 t/d')
     ax4.plot(tOverall,np.ones(len(tOverall)) * 240,'r-', label =  'Toxic contaminant dissociation temperature')
     ax4.legend()
-    ax4.text(x = 225, y = 130, s = 'All forecasted injection phases are 60 days followed by 90 day production periods.', bbox = dict(facecolor='none', edgecolor='black', pad=5.0))
+    ax4.text(x = 10, y = 130, s = 'All forecasted injection phases are 60 days followed by 90 day production periods.', bbox = dict(facecolor='none', edgecolor='black', pad=5.0))
     ax4.set_xlim([t1[0], tf[-1]])
-    ax4.set_title('What-if scenarios')
+    ax4.set_title('Temperature Forecasting')
     ax4.set_xlabel('time (days)')
     ax4.set_ylabel('Temperature (°C)')
+
+    # Forecast Pressure plot
+    f5, ax5 = plt.subplots(1,1)
+    ax5.plot(t1, P, 'b-', label = 'Model')
+    ax5.plot(pressure[0], pressure[1], 'ko', label = 'data')
+    ax5.plot(tf[startForc:], FP4[startForc:], color = '#8B008B', ls = '-', label = 'Steam injection = 2000 t/d')
+    ax5.plot(tf[startForc:], FP1[startForc:], 'y-', label = 'Todd Energy proposed steam injection = 1000 t/d')
+    ax5.plot(tf[startForc:], FP3[startForc:], color = '#00FFFF', ls = '-', label = 'Current steam injection = 460 t/d')
+    ax5.plot(tf[startForc:], FP2[startForc:], 'g-', label = 'Steam injection = 0 t/d')
+    ax5.legend()
+    ax5.text(x = 10, y = 130, s = 'All forecasted injection phases are 60 days followed by 90 day production periods.', bbox = dict(facecolor='none', edgecolor='black', pad=5.0))
+    ax5.set_xlim([t1[0], tf[-1]])
+    ax5.set_title('Pressure Forecasting')
+    ax5.set_xlabel('time (days)')
+    ax5.set_ylabel('Pressure (Pa)')
 
 
 
