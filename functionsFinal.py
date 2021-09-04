@@ -236,9 +236,6 @@ def loadData():
     return oil, pressure, steam, temp, water
 
 if __name__ == "__main__":
-    #benchmarking
-    benchmark()
-    
     oil, pressure, steam, temp, water=loadData()
 
     t1=np.linspace(0,217,1000)
@@ -308,7 +305,7 @@ if __name__ == "__main__":
     ax2[1].set_title('Best fit LMP model')
 
     # Benchmarking Code HERE:
-
+    benchmark()
 
 
 
