@@ -3,6 +3,7 @@ from os import sep
 from matplotlib import pyplot as plt
 from scipy.optimize import curve_fit
 from scipy.interpolate import interp1d
+from benchmark import*
 
 Tsteam = 260
 
@@ -235,6 +236,9 @@ def loadData():
     return oil, pressure, steam, temp, water
 
 if __name__ == "__main__":
+    #benchmarking
+    benchmark()
+    
     oil, pressure, steam, temp, water=loadData()
 
     t1=np.linspace(0,217,1000)
