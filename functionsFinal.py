@@ -250,7 +250,7 @@ if __name__ == "__main__":
     # Modifies function so that it leaves only a,b,P0 as parameters apart from t.
     callibP = lambda t, a, b, P0: fitPressure(t, Q.giveQ, a, b, P0)
 
-    parsFoundP, _ = curve_fit(callibP, pressure[0], pressure[1], [a,b,P0])
+    parsFoundP, pcov = curve_fit(callibP, pressure[0], pressure[1], [a,b,P0])
     print(parsFoundP)
 
     tsolP, P = solvePressure(t1, t1[1]-t1[0], parsFoundP[2], Q.giveQ, parsFoundP)
@@ -373,7 +373,40 @@ if __name__ == "__main__":
     ax5.set_xlabel('time (days)')
     ax5.set_ylabel('Pressure (Pa)')
 
-
+    # uncertainty for pressure plot
+    fig,ax = plt.subplots(1,1)
+    ax.plot(t1, P, 'b-', label = 'Model')
+    ax.plot(pressure[0], pressure[1], 'ko', label = 'data')
+    ax.plot(tf[startForc:], FP4[startForc:], color = '#8B008B', ls = '-', label = 'Steam injection = 2000 t/d')
+    ax.plot(tf[startForc:], FP1[startForc:], 'y-', label = 'Todd Energy proposed steam injection = 1000 t/d')
+    ax.plot(tf[startForc:], FP3[startForc:], color = '#00FFFF', ls = '-', label = 'Current steam injection = 460 t/d')
+    ax.plot(tf[startForc:], FP2[startForc:], 'g-', label = 'Steam injection = 0 t/d')
+    ax.set_title('Pressure Forecasting')
+    ps = np.random.multivariate_normal(parsFoundP, pcov, 100)   # samples from posterior
+    for pi in ps:
+        tsolP, P = solvePressure(t1, t1[1]-t1[0], pi[2], Q.giveQ, pi)
+        # Forecast 1
+        # Tood Energy proposal of steam injection of 1000 tonnes per day 60 days, followed by 90 day production periods.
+        Qf1 = Qterms(1000)
+        t, FP1 = solvePressure(tf, tf[1]-tf[0], pi[2], Qf1.giveQ, pi)      
+        # Forecast 2
+        # No steam injection
+        Qf2 = Qterms(0)
+        t, FP2 = solvePressure(tf, tf[1]-tf[0], pi[2], Qf2.giveQ, pi)        
+        # Forecast 3
+        # Current steam injection of 460 tonnes per day for 60 days, followed by 90 day production periods.
+        Qf3 = Qterms(460)
+        t, FP3 = solvePressure(tf, tf[1]-tf[0], pi[2], Qf3.giveQ, pi) 
+        # Forecast 4
+        # steam injection of 2000 tonnes per day 60 days, followed by 90 day production periods.
+        Qf4 = Qterms(2000)
+        t, FP4 = solvePressure(tf, tf[1]-tf[0], pi[2], Qf4.giveQ, pi)
+        ax.plot(tsolP, P, 'b-', alpha=0.2, lw=0.5)
+        ax.plot(tf[startForc:], FP4[startForc:], color = '#8B008B', alpha=0.2, lw=0.5)
+        ax.plot(tf[startForc:], FP1[startForc:], 'y-', alpha=0.2, lw=0.5)
+        ax.plot(tf[startForc:], FP3[startForc:], color = '#00FFFF', alpha=0.2, lw=0.5)
+        ax.plot(tf[startForc:], FP2[startForc:], 'g-', alpha=0.2, lw=0.5)
+    ax.legend()  
 
     plt.show()
 
