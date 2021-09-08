@@ -2,7 +2,7 @@ from functionsFinal import*
 import numpy as np
 from matplotlib import pyplot as plt
 
-#simple LMP for energy which does not have net mass flow(kettle experiment)
+#simple pressure and temperature ODEs
 def simpleodePressure(t, P, q, a, b, P0):
     ''' Returns dP/dt
 
