@@ -411,11 +411,11 @@ if __name__ == "__main__":
     ax4.plot(t1,T,'b-',label='Model')
     ax4.plot(temp[0],temp[1],'ko',label='data')
     ax4.plot(tf[startForc:], FT4[startForc:], color = '#8B008B', ls = '-', label = 'Steam injection = 2000 t/d')
-    ax4.plot(tf[startForc:], FT1[startForc:], 'y-', label = 'Todd Energy proposed steam injection = 1000 t/d')
+    ax4.plot(tf[startForc:], FT1[startForc:], 'y-', label = 'Todd Energy proposed\nsteam injection = 1000 t/d')
     ax4.plot(tf[startForc:], FT3[startForc:], color = '#00FFFF', ls = '-', label = 'Current steam injection = 460 t/d')
     ax4.plot(tf[startForc:], FT2[startForc:], 'g-', label = 'Steam injection = 0 t/d')
-    ax4.plot(tOverall,np.ones(len(tOverall)) * 240,'r-', label =  'Toxic contaminant dissociation temperature')
-    ax4.legend()
+    ax4.plot(tOverall,np.ones(len(tOverall)) * 240,'r-', label =  'Toxic contaminant\ndissociation temperature')
+    ax4.legend(loc='upper right',prop={'size': 7},bbox_to_anchor=(1.1, 0.95))
     ax4.text(x = 10, y = 130, s = 'All forecasted injection phases are 60 days followed by 90 day production periods.', bbox = dict(facecolor='none', edgecolor='black', pad=5.0))
     ax4.set_xlim([t1[0], tf[-1]])
     ax4.set_title('Temperature Forecasting')
@@ -479,10 +479,10 @@ if __name__ == "__main__":
     ax6.plot(t1,T,'b-',label='Model')
     ax6.plot(temp[0],temp[1],'ko',label='data')
     ax6.plot(tf[startForc:], FT4[startForc:], color = '#8B008B', ls = '-', label = 'Steam injection = 200 t/d')
-    ax6.plot(tf[startForc:], FT1[startForc:], 'y-', label = 'Todd Energy proposed steam injection = 1000 t/d')
+    ax6.plot(tf[startForc:], FT1[startForc:], 'y-', label = 'Todd Energy proposed\nsteam injection = 1000 t/d')
     ax6.plot(tf[startForc:], FT3[startForc:], color = '#00FFFF', ls = '-', label = 'Current steam injection = 460 t/d')
     ax6.plot(tf[startForc:], FT2[startForc:], 'g-', label = 'Steam injection = 0 t/d')
-    ax6.plot(tOverall,np.ones(len(tOverall)) * 240,'r-', label =  'Toxic contaminant dissociation temperature')
+    ax6.plot(tOverall,np.ones(len(tOverall)) * 240,'r-', label =  'Toxic contaminant\ndissociation temperature')
     ax6.set_title('Temperature')
     ts = np.random.multivariate_normal(parsFoundT, tcov, 100)   # samples from posterior
     for pi in ts:
@@ -521,9 +521,19 @@ if __name__ == "__main__":
         tsolT, T = solveTemperature(t1, t1[1]-t1[0], P, Q.giveQs, parsFoundP[0],\
         parsFoundP[1], pi[0], pi[1], parsFoundP[2], pi[2])
         ax6.plot(t1,T,'b-',alpha=0.2,lw=0.5)
-        ax6.legend()  
+        ax6.legend(loc='upper right',prop={'size': 7},bbox_to_anchor=(1.1, 0.88))  
 
     plt.show()
+
+
+
+
+
+
+
+
+
+
 
 
 
