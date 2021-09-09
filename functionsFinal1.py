@@ -410,7 +410,7 @@ if __name__ == "__main__":
     f4, ax4 = plt.subplots(1,1)
     ax4.plot(t1,T,'b-',label='Model')
     ax4.plot(temp[0],temp[1],'ko',label='data')
-    ax4.plot(tf[startForc:], FT4[startForc:], color = '#8B008B', ls = '-', label = 'Steam injection = 2000 t/d')
+    ax4.plot(tf[startForc:], FT4[startForc:], color = '#8B008B', ls = '-', label = 'Steam injection = 200 t/d')
     ax4.plot(tf[startForc:], FT1[startForc:], 'y-', label = 'Todd Energy proposed\nsteam injection = 1000 t/d')
     ax4.plot(tf[startForc:], FT3[startForc:], color = '#00FFFF', ls = '-', label = 'Current steam injection = 460 t/d')
     ax4.plot(tf[startForc:], FT2[startForc:], 'g-', label = 'Steam injection = 0 t/d')
