@@ -523,6 +523,7 @@ if __name__ == "__main__":
         parsFoundP[1], pi[0], pi[1], parsFoundP[2], pi[2])
         ax6.plot(t1,T,'b-',alpha=0.2,lw=0.5)
         ax6.legend(loc='upper right',prop={'size': 7},bbox_to_anchor=(1.1, 0.88))  
+        ax6.set_xlim([0,370])
 
     plt.show()
 
