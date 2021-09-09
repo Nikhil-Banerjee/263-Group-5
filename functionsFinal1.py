@@ -240,7 +240,7 @@ if __name__ == "__main__":
 
     t1=np.linspace(0,217,1000)
 
-    # Pressure model initial guesses:
+    # first pressure model initial guesses:
     a = 0.2
     b = 0.05
 
@@ -271,6 +271,37 @@ if __name__ == "__main__":
     ax9[1].set_ylabel('pressure misfit [Pa]')
     ax9[1].set_xlabel('time [days]')
     ax9[1].set_title('Best fit LMP model')
+
+    # first Temperature model initial guess
+    c = 0.1
+    M = 4000
+
+    callibT = lambda t,c,M: fitTemp(t, Q.giveQ, Q.giveQs,\
+         parsFoundP[0], parsFoundP[1], c, M, pressure[1][0], temp[1][0])
+
+    parsFoundT, tcov = curve_fit(callibT, temp[0], temp[1], [c, M])
+    print(parsFoundT)
+
+    tsolT, T = solveTemperature(t1, t1[1]-t1[0], P, Q.giveQs, parsFoundP[0],\
+        parsFoundP[1], parsFoundT[0], parsFoundT[1], pressure[1][0], temp[1][0])
+
+    tempMisfit = temp[1] - np.interp(temp[0], tsolT, T)
+
+    f8,ax8 = plt.subplots(1,2)
+    ax8[0].plot(t1,T,'k--',label='c = {:3f}\nM = {:3f}'.format(parsFoundT[0],parsFoundT[1]))
+    ax8[0].plot(temp[0],temp[1],'r.',label='data')
+    ax8[0].plot(t1, np.ones(len(t1)) * 240, 'g-', label = 'Toxic contaminant\ndissociation temperature')
+    ax8[1].plot(temp[0],tempMisfit,'kx')
+    ax8[1].plot(temp[0],temp[0]*0,'r--')
+    ax8[0].set_xlim([0, t1[-1]])
+    ax8[1].set_xlim([0, t1[-1]])
+    ax8[0].set_ylabel('temperature [°C]')
+    ax8[0].set_xlabel('time [days]')
+    ax8[0].set_title('Comparison of model to observed \n temperature value')
+    ax8[0].legend(loc='lower left',prop={'size': 7})
+    ax8[1].set_ylabel('temperature misfit [°C]')
+    ax8[1].set_xlabel('time [days]')
+    ax8[1].set_title('Best fit LMP model')
     
     # Improved Pressure model initial guesses:
     a = 0.2
@@ -304,37 +335,6 @@ if __name__ == "__main__":
     ax1[1].set_ylabel('pressure misfit [Pa]')
     ax1[1].set_xlabel('time [days]')
     ax1[1].set_title('Best fit LMP model')
-
-    # Temperature model initial guess
-    c = 0.1
-    M = 4000
-
-    callibT = lambda t,c,M: fitTemp(t, Q.giveQ, Q.giveQs,\
-         parsFoundP[0], parsFoundP[1], c, M, parsFoundP[2], temp[1][0])
-
-    parsFoundT, tcov = curve_fit(callibT, temp[0], temp[1], [c, M])
-    print(parsFoundT)
-
-    tsolT, T = solveTemperature(t1, t1[1]-t1[0], P, Q.giveQs, parsFoundP[0],\
-        parsFoundP[1], parsFoundT[0], parsFoundT[1], parsFoundP[2], temp[1][0])
-
-    tempMisfit = temp[1] - np.interp(temp[0], tsolT, T)
-
-    f8,ax8 = plt.subplots(1,2)
-    ax8[0].plot(t1,T,'k--',label='c = {:3f}\nM = {:3f}'.format(parsFoundT[0],parsFoundT[1]))
-    ax8[0].plot(temp[0],temp[1],'r.',label='data')
-    ax8[0].plot(t1, np.ones(len(t1)) * 240, 'g-', label = 'Toxic contaminant\ndissociation temperature')
-    ax8[1].plot(temp[0],tempMisfit,'kx')
-    ax8[1].plot(temp[0],temp[0]*0,'r--')
-    ax8[0].set_xlim([0, t1[-1]])
-    ax8[1].set_xlim([0, t1[-1]])
-    ax8[0].set_ylabel('temperature [°C]')
-    ax8[0].set_xlabel('time [days]')
-    ax8[0].set_title('Comparison of model to observed \n temperature value')
-    ax8[0].legend(loc='lower left',prop={'size': 7})
-    ax8[1].set_ylabel('temperature misfit [°C]')
-    ax8[1].set_xlabel('time [days]')
-    ax8[1].set_title('Best fit LMP model')
 
     # improved Temperature model initial guesses
     c = 0.1
@@ -472,7 +472,6 @@ if __name__ == "__main__":
         ax.plot(tf[startForc:], FP2[startForc:], 'g-', alpha=0.2, lw=0.5)
     ax.legend()  
 
-    plt.show()
 
 
     # uncertainity for temperature plot
@@ -525,6 +524,17 @@ if __name__ == "__main__":
         ax6.legend()  
 
     plt.show()
+
+
+
+
+
+
+
+
+
+
+
 
 
 
