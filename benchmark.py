@@ -107,7 +107,7 @@ def benchmark():
     axe[1].plot(t,Ti[1],'k--',label='Numerical Solutions')
     axe[1].plot(t_sol,T_sol,'r.',label='Analytical Solution')
     #label
-    axe[0].set_ylabel('Pressure [Pa]')
+    axe[0].set_ylabel('Pressure [kPa]')
     axe[0].set_xlabel('time [s]')
     axe[0].set_title('Benchmark of the Analytical and Numerical \n Solutions of the pressure ODE')
     axe[0].legend(loc='upper right',prop={'size': 7})
@@ -128,10 +128,12 @@ def benchmark():
         j+=1
         
     f,axe = plt.subplots(1)
-    axe.plot(inv_h,sol,'r.')
-    axe.set_ylabel('Pressure [Pa]')
+    axe.plot(inv_h,sol,'r.', label = 'Numerical Solution')
+    axe.plot(inv_h,-(1-np.exp(-10))+1 + np.zeros(len(inv_h)),'k--', label = 'Analytical Solution')
+    axe.set_ylabel('Pressure [kPa]')
     axe.set_xlabel('1/h')
     axe.set_title('Convergence test for Improved Euler')
     axe.set_ylim([0, 70e-5])
-    axe.set_xlim([0, 62])
+    axe.set_xlim([0, 95])
     axe.annotate("", xy=(10, 0.000048), xytext=(10, 0.000088),arrowprops=dict(arrowstyle="->"))
+    axe.legend()

@@ -419,7 +419,7 @@ if __name__ == "__main__":
     # Benchmarking Code HERE:
     benchmark()
 
-
+    plt.show()
 
     # Forecasts:
     tf = np.linspace(0, 370, 3700)
