@@ -374,7 +374,7 @@ if __name__ == "__main__":
 
 
     # Forecasts:
-    tf = np.linspace(0, 370, 500)
+    tf = np.linspace(0, 370, 1705)
     # Forecast 1
     # Tood Energy proposal of steam injection of 1000 tonnes per day 60 days, followed by 90 day production periods.
     Qf1 = Qterms(1000)
@@ -386,21 +386,21 @@ if __name__ == "__main__":
     # No steam injection
     Qf2 = Qterms(0)
     t, FP2 = solvePressure(tf, tf[1]-tf[0], parsFoundP[2], Qf2.giveQ, parsFoundP)
-    t, FT2 = solveTemperature(tf, tf[1]-tf[0], FP1, Qf2.giveQs, parsFoundP[0],\
+    t, FT2 = solveTemperature(tf, tf[1]-tf[0], FP2, Qf2.giveQs, parsFoundP[0],\
         parsFoundP[1], parsFoundT[0], parsFoundT[1], parsFoundP[2], parsFoundT[2])
     
     # Forecast 3
     # Current steam injection of 460 tonnes per day for 60 days, followed by 90 day production periods.
     Qf3 = Qterms(460)
     t, FP3 = solvePressure(tf, tf[1]-tf[0], parsFoundP[2], Qf3.giveQ, parsFoundP)
-    t, FT3 = solveTemperature(tf, tf[1]-tf[0], FP1, Qf3.giveQs, parsFoundP[0],\
+    t, FT3 = solveTemperature(tf, tf[1]-tf[0], FP3, Qf3.giveQs, parsFoundP[0],\
         parsFoundP[1], parsFoundT[0], parsFoundT[1], parsFoundP[2], parsFoundT[2])
     
     # Forecast 4
     # steam injection of 200 tonnes per day 60 days, followed by 90 day production periods.
     Qf4 = Qterms(200)
     t, FP4 = solvePressure(tf, tf[1]-tf[0], parsFoundP[2], Qf4.giveQ, parsFoundP)
-    t, FT4 = solveTemperature(tf, tf[1]-tf[0], FP1, Qf4.giveQs, parsFoundP[0],\
+    t, FT4 = solveTemperature(tf, tf[1]-tf[0], FP4, Qf4.giveQs, parsFoundP[0],\
         parsFoundP[1], parsFoundT[0], parsFoundT[1], parsFoundP[2], parsFoundT[2])
 
     startForc = np.argmax(tf>=t1[-1])
@@ -415,11 +415,11 @@ if __name__ == "__main__":
     ax4.plot(tf[startForc:], FT3[startForc:], color = '#00FFFF', ls = '-', label = 'Current steam injection = 460 t/d')
     ax4.plot(tf[startForc:], FT2[startForc:], 'g-', label = 'Steam injection = 0 t/d')
     ax4.plot(tOverall,np.ones(len(tOverall)) * 240,'r-', label =  'Toxic contaminant\ndissociation temperature')
-    ax4.legend(loc='upper right',prop={'size': 7},bbox_to_anchor=(1.1, 0.95))
+    ax4.legend(loc='lower right',prop={'size': 7})
     ax4.text(x = 10, y = 124, s = 'All forecasted injection phases are 60 days followed by 90 day production periods.', bbox = dict(facecolor='none', edgecolor='black', pad=5.0))
     ax4.set_xlim([t1[0], tf[-1]])
     ax4.set_ylim([120, 245])
-    ax4.set_title('Temperature Forecasting')
+    ax4.set_title('Thermal Recovery : What-if scenarios')
     ax4.set_xlabel('time (days)')
     ax4.set_ylabel('Temperature (°C)')
 
@@ -447,7 +447,7 @@ if __name__ == "__main__":
     ax.plot(tf[startForc:], FP3[startForc:], color = '#00FFFF', ls = '-', label = 'Current steam injection = 460 t/d')
     ax.plot(tf[startForc:], FP2[startForc:], 'g-', label = 'Steam injection = 0 t/d')
     ax.set_title('Pressure')
-    ps = np.random.multivariate_normal(parsFoundP, pcov, 100)   # samples from posterior
+    ps = np.random.multivariate_normal(parsFoundP, pcov, 150)   # samples from posterior
     for pi in ps:
         tsolP, P = solvePressure(t1, t1[1]-t1[0], pi[2], Q.giveQ, pi)
         # Forecast 1
@@ -466,6 +466,7 @@ if __name__ == "__main__":
         # steam injection of 200 tonnes per day 60 days, followed by 90 day production periods.
         Qf4 = Qterms(200)
         t, FP4 = solvePressure(tf, tf[1]-tf[0], pi[2], Qf4.giveQ, pi)
+        #plotting commands
         ax.plot(tsolP, P, 'b-', alpha=0.2, lw=0.5)
         ax.plot(tf[startForc:], FP4[startForc:], color = '#8B008B', alpha=0.2, lw=0.5)
         ax.plot(tf[startForc:], FP1[startForc:], 'y-', alpha=0.2, lw=0.5)
@@ -476,6 +477,7 @@ if __name__ == "__main__":
 
 
     # uncertainity for temperature plot
+    #plotting commands
     fig,ax6 = plt.subplots(1,1)
     ax6.plot(t1,T,'b-',label='Model')
     ax6.plot(temp[0],temp[1],'ko',label='data')
@@ -484,8 +486,17 @@ if __name__ == "__main__":
     ax6.plot(tf[startForc:], FT3[startForc:], color = '#00FFFF', ls = '-', label = 'Current steam injection = 460 t/d')
     ax6.plot(tf[startForc:], FT2[startForc:], 'g-', label = 'Steam injection = 0 t/d')
     ax6.plot(tOverall,np.ones(len(tOverall)) * 240,'r-', label =  'Toxic contaminant\ndissociation temperature')
-    ax6.set_title('Temperature')
-    ts = np.random.multivariate_normal(parsFoundT, tcov, 100)   # samples from posterior
+    ax6.set_xlabel('Time (Days)')
+    ax6.set_ylabel('Temperature (°C)')
+    ax6.set_title('Thermal Recovery of Bitumen : Scenario Forecast')
+    np.random.seed(0)
+    ts = np.random.multivariate_normal(parsFoundT, tcov, 150)   # samples from posterior
+    #creating empty arrays used for the histogram and for calculating the max value of each scenario to obtain CI values
+    histo=[]
+    empty1=[]
+    empty2=[]
+    empty3=[]
+    empty4=[]
     for pi in ts:
         # Forecast 1
         # Tood Energy proposal of steam injection of 1000 tonnes per day 60 days, followed by 90 day production periods.
@@ -493,27 +504,30 @@ if __name__ == "__main__":
         t, FP1 = solvePressure(tf, tf[1]-tf[0], parsFoundP[2], Qf1.giveQ, parsFoundP)
         t, FT1 = solveTemperature(tf, tf[1]-tf[0], FP1, Qf1.giveQs, parsFoundP[0],\
             parsFoundP[1], pi[0], pi[1], parsFoundP[2], pi[2])
-        
+        empty1.append(max(FT1[startForc:]))
+        histo.append(max(FT1))
         # Forecast 2
         # No steam injection
         Qf2 = Qterms(0)
         t, FP2 = solvePressure(tf, tf[1]-tf[0], parsFoundP[2], Qf2.giveQ, parsFoundP)
-        t, FT2 = solveTemperature(tf, tf[1]-tf[0], FP1, Qf2.giveQs, parsFoundP[0],\
+        t, FT2 = solveTemperature(tf, tf[1]-tf[0], FP2, Qf2.giveQs, parsFoundP[0],\
             parsFoundP[1], pi[0], pi[1], parsFoundP[2], pi[2])
-        
+        empty2.append(max(FT2[startForc:]))
         # Forecast 3
         # Current steam injection of 460 tonnes per day for 60 days, followed by 90 day production periods.
         Qf3 = Qterms(460)
         t, FP3 = solvePressure(tf, tf[1]-tf[0], parsFoundP[2], Qf3.giveQ, parsFoundP)
-        t, FT3 = solveTemperature(tf, tf[1]-tf[0], FP1, Qf3.giveQs, parsFoundP[0],\
+        t, FT3 = solveTemperature(tf, tf[1]-tf[0], FP3, Qf3.giveQs, parsFoundP[0],\
             parsFoundP[1], pi[0], pi[1], parsFoundP[2], pi[2])
-        
+        empty3.append(max(FT3[startForc:]))
         # Forecast 4
         # steam injection of 200 tonnes per day 60 days, followed by 90 day production periods.
         Qf4 = Qterms(200)
         t, FP4 = solvePressure(tf, tf[1]-tf[0], parsFoundP[2], Qf4.giveQ, parsFoundP)
-        t, FT4 = solveTemperature(tf, tf[1]-tf[0], FP1, Qf4.giveQs, parsFoundP[0],\
+        t, FT4 = solveTemperature(tf, tf[1]-tf[0], FP4, Qf4.giveQs, parsFoundP[0],\
             parsFoundP[1], pi[0], pi[1], parsFoundP[2], pi[2])    
+        empty4.append(max(FT4[startForc:]))
+        #plotting commands
         ax6.plot(tsolT, T, 'b-', alpha=0.2, lw=0.5)
         ax6.plot(tf[startForc:], FT4[startForc:], color = '#8B008B', alpha=0.2, lw=0.5)
         ax6.plot(tf[startForc:], FT1[startForc:], 'y-', alpha=0.2, lw=0.5)
@@ -522,13 +536,45 @@ if __name__ == "__main__":
         tsolT, T = solveTemperature(t1, t1[1]-t1[0], P, Q.giveQs, parsFoundP[0],\
         parsFoundP[1], pi[0], pi[1], parsFoundP[2], pi[2])
         ax6.plot(t1,T,'b-',alpha=0.2,lw=0.5)
-        ax6.legend(loc='upper right',prop={'size': 7},bbox_to_anchor=(1.1, 0.88))  
-        ax6.set_xlim([0,370])
+        ax6.legend(loc='lower left',prop={'size': 7})                             
 
+    # where a,b,c,d,e,f,g and h are values for 95% confidence intervals for the four sceanrios
+    a=np.percentile(empty1,2.5)
+    b=np.percentile(empty1,97.5)
+    c=np.percentile(empty2,2.5)
+    d=np.percentile(empty2,97.5)
+    e=np.percentile(empty3,2.5)
+    f=np.percentile(empty3,97.5)
+    g=np.percentile(empty4,2.5)
+    h=np.percentile(empty4,97.5)                            
+    print(str(a)+','+str(b)+','+str(c)+','+str(d)+','+str(e)+','+str(f)+','+str(g)+','+str(h))
+
+
+# Plotting the Histogram 
+
+    # plt.hist(histo,bins='auto')
+    # plt.xlabel('Temperature for 1000 t/d (°C)')
+    # plt.ylabel('Probability Density')
+    # plt.title('Histogram showing 95% confidence interval for Temperature at a steam injection of 1000 t/d')
+    # # 95% confidence interval
+    # ci = np.percentile(histo,2.5)
+    # ci2 = np.percentile(histo,97.5)
+    # plt.axvline(ci,color='r',linestyle='dashed')
+    # plt.axvline(ci2,color='r',linestyle='dashed')
+    # plt.show()
+
+
+    f10,ax10 = plt.subplots(1,1)
+    ax10.hist(histo, bins = 'auto')
+    ax10.set_xlabel('Temperature for 1000 t/d (°C)')
+    ax10.set_ylabel('Probability Density')
+    ax10.set_title('Histogram showing 95% confidence interval for Temperature at a steam injection of 1000 t/d')
+    # 95% confidence interval
+    ci = np.percentile(histo,2.5)
+    ci2 = np.percentile(histo,97.5)
+    ax10.axvline(ci,color='r',linestyle='dashed')
+    ax10.axvline(ci2,color='r',linestyle='dashed')
     plt.show()
-
-
-
 
 
 
