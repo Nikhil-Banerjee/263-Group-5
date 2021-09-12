@@ -9,7 +9,7 @@ README.md - A brief overview of the repositry.
 
 main.py - The main implementation, that includes functions (Lumped Parameter Models and Improved Euler Implementation) used in the model's implementation, model calibration, the model's use for scenario exploration and future prediction, and generation of uncertainty in the model. 
 
-benchmark.py - Solving of the model, comparing a numerical solution to an analytical solution, as well as a convergence test to determine the appropriate step size use in the Improved Euler Implementation in the model. 
+benchmark.py - Solving of the model, comparing a numerical solution to an analytical solution, as well as a convergence test to determine the appropriate step size to use in the Improved Euler Implementation in the model. 
 
 Unit_Tests.py - Quality control and code verfication, that is Unit Tests, of the functions implemented in creation of the model. 
 
