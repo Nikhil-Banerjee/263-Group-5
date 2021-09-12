@@ -134,7 +134,8 @@ class Qterms:
         self.interpSteam = interp1d(steam[0], steam[1])
 
         # Storing the time values for injection end and projection end of forecasts.
-        self.forcInjecEnd = 395 + 60
+        self.forcInjecStart = 365 + 90
+        self.forcInjecEnd = 365 + 60 + 90
         self.forcProducEnd = self.forcInjecEnd + 90
 
         # Assigns value to be used for qs during injection period.
@@ -205,8 +206,10 @@ class Qterms:
         elif((t >= self.steam[0][0]) and (t <= self.steam[0][-1])):
             # Within given qs values.
             s = self.interpSteam(t)
-        elif ((t > self.steam[0][-1]) and (t <= self.forcInjecEnd)):
+        elif ((t > self.steam[0][-1]) and (t <= self.forcInjecStart)):
             # For forecasted injection period.
+            s = 0
+        elif ((t > self.steam[0][-1]) and (t <= self.forcInjecEnd)):
             s = self.forc_s
         elif ((t > self.forcInjecEnd)) and (t <= self.forcProducEnd):
             # For forecasted production period.
@@ -287,7 +290,7 @@ if __name__ == "__main__":
 
 
     # Initial pressure model fitting:
-    t1=np.linspace(0,395,3950)
+    t1=np.linspace(0,455,3950)
 
     # first pressure model initial guesses:
     a = 0.2
@@ -423,7 +426,7 @@ if __name__ == "__main__":
 
 
     # Forecasts:
-    tf = np.linspace(t1[-1], 485, 900)
+    tf = np.linspace(t1[-1], 605, 900)
     # Forecast 1
     # Tood Energy proposal of steam injection of 1000 tonnes per day 60 days, followed by 90 day production periods.
     Qf1 = Qterms(1000)
