@@ -78,6 +78,7 @@ def Tprime(t, P, T, P0, T0):
         return T0
 
 def solvePressure(t, dt, P0, q, pars):
+    # Implements the improved euler method for the pressure ODE.
     x1=np.zeros(len(t))
     x1[0]=P0
     x=np.zeros(len(t))
@@ -92,7 +93,7 @@ def solvePressure(t, dt, P0, q, pars):
     return t, x  
 
 def solveTemperature(t, dt, P, qs, a, b, c, M, P0, T0):
-
+    # Implements the improved euler method for the temperature ODE.
     x1=np.zeros(len(t))
     x1[0]=T0
     x=np.zeros(len(t))
@@ -107,11 +108,13 @@ def solveTemperature(t, dt, P, qs, a, b, c, M, P0, T0):
     return t,x
 
 def fitPressure(t, q, a, b, P0):
+    # Fits a pressure numerical solution for given parameter values.
     ts, P = solvePressure(t, t[1]-t[0], P0, q, [a,b,P0])
 
     return P
 
 def fitTemp(t, q, qs, a, b, c, M, P0, T0):
+    # Fits a temperature numerical solution for given parameter values.
     P = fitPressure(t, q, a, b, P0)
 
     tsol, T = solveTemperature(t, t[1]-t[0], P, qs, a, b, c, M, P0, T0)
