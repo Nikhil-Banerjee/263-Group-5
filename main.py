@@ -139,7 +139,7 @@ class Qterms:
         self.forcProducEnd = self.forcInjecEnd + 90
 
         # Assigns value to be used for qs during injection period.
-        if forcInject != None:
+        if (forcInject != None) & (forcInject != 0):
             self.forc_s = forcInject
         else:
             self.forc_s = self.steam[1][-1]
@@ -165,7 +165,10 @@ class Qterms:
         elif ((t > self.water[0][-1]) and (t <= self.forcInjecEnd)):
             w = 0
         elif ((t > self.forcInjecEnd)) and (t <= self.forcProducEnd):
-            w = 80.637/2
+            if (self.forc_s == 0):
+                w = 0
+            else:
+                w = 80.637/2
         else:
             ValueError('Tried to access Q outside of allowed time values.')
     
@@ -177,7 +180,10 @@ class Qterms:
         elif ((t > self.oil[0][-1]) and (t <= self.forcInjecEnd)):
             o = 0
         elif ((t > self.forcInjecEnd)) and (t <= self.forcProducEnd):
-            o = 80.637/2
+            if (self.forc_s == 0):
+                o = 0
+            else:
+                o = 80.637/2
         else:
             ValueError('Tried to access Q outside of allowed time values.')
         
