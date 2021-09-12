@@ -443,8 +443,8 @@ if __name__ == "__main__":
         parsFoundP[1], parsFoundT[0], parsFoundT[1], parsFoundP[2], parsFoundT[2])
     
     # Forecast 4
-    # steam injection of 200 tonnes per day 60 days, followed by 90 day production periods.
-    Qf4 = Qterms(200)
+    # steam injection of 230 tonnes per day 60 days, followed by 90 day production periods.
+    Qf4 = Qterms(230)
     t, FP4 = solvePressure(tf, tf[1]-tf[0], parsFoundP[2], Qf4.giveQ, parsFoundP)
     t, FT4 = solveTemperature(tf, tf[1]-tf[0], FP4, Qf4.giveQs, parsFoundP[0],\
         parsFoundP[1], parsFoundT[0], parsFoundT[1], parsFoundP[2], parsFoundT[2])
@@ -456,7 +456,7 @@ if __name__ == "__main__":
     f4, ax4 = plt.subplots(1,1)
     ax4.plot(t1,T,'b-',label='Model')
     ax4.plot(temp[0],temp[1],'ko',label='data')
-    ax4.plot(tf[startForc:], FT4[startForc:], color = '#8B008B', ls = '-', label = 'Steam Injection = 200 t/d')
+    ax4.plot(tf[startForc:], FT4[startForc:], color = '#8B008B', ls = '-', label = 'Steam Injection = 230 t/d')
     ax4.plot(tf[startForc:], FT1[startForc:], 'y-', label = 'Todd Energy Proposed\nSteam Injection = 1000 t/d')
     ax4.plot(tf[startForc:], FT3[startForc:], color = '#00FFFF', ls = '-', label = 'Current Steam Injection = 460 t/d')
     ax4.plot(tf[startForc:], FT2[startForc:], 'g-', label = 'Steam Injection = 0 t/d')
@@ -473,7 +473,7 @@ if __name__ == "__main__":
     f5, ax5 = plt.subplots(1,1)
     ax5.plot(t1, P, 'b-', label = 'Model')
     ax5.plot(pressure[0], pressure[1], 'ko', label = 'data')
-    ax5.plot(tf[startForc:], FP4[startForc:], color = '#8B008B', ls = '-', label = 'Steam Injection = 200 t/d')
+    ax5.plot(tf[startForc:], FP4[startForc:], color = '#8B008B', ls = '-', label = 'Steam Injection = 230 t/d')
     ax5.plot(tf[startForc:], FP1[startForc:], 'y-', label = 'Todd Energy Proposed Steam Injection = 1000 t/d')
     ax5.plot(tf[startForc:], FP3[startForc:], color = '#00FFFF', ls = '-', label = 'Current Steam Injection = 460 t/d')
     ax5.plot(tf[startForc:], FP2[startForc:], 'g-', label = 'Steam Injection = 0 t/d')
@@ -488,7 +488,7 @@ if __name__ == "__main__":
     fig,ax = plt.subplots(1,1)
     ax.plot(t1, P, 'b-', label = 'Model')
     ax.plot(pressure[0], pressure[1], 'ko', label = 'data')
-    ax.plot(tf[startForc:], FP4[startForc:], color = '#8B008B', ls = '-', label = 'Steam injection = 200 t/d')
+    ax.plot(tf[startForc:], FP4[startForc:], color = '#8B008B', ls = '-', label = 'Steam injection = 230 t/d')
     ax.plot(tf[startForc:], FP1[startForc:], 'y-', label = 'Todd Energy Proposed Steam Injection = 1000 t/d')
     ax.plot(tf[startForc:], FP3[startForc:], color = '#00FFFF', ls = '-', label = 'Current Steam Injection = 460 t/d')
     ax.plot(tf[startForc:], FP2[startForc:], 'g-', label = 'Steam Injection = 0 t/d')
@@ -513,8 +513,8 @@ if __name__ == "__main__":
         Qf3 = Qterms(460)
         t, FP3 = solvePressure(tf, tf[1]-tf[0], pi[2], Qf3.giveQ, pi) 
         # Forecast 4
-        # steam injection of 200 tonnes per day 60 days, followed by 90 day production periods.
-        Qf4 = Qterms(200)
+        # steam injection of 230 tonnes per day 60 days, followed by 90 day production periods.
+        Qf4 = Qterms(230)
         t, FP4 = solvePressure(tf, tf[1]-tf[0], pi[2], Qf4.giveQ, pi)
         #plotting commands
         ax.plot(tsolP, P, 'b-', alpha=0.2, lw=0.5)
@@ -529,7 +529,7 @@ if __name__ == "__main__":
     fig,ax6 = plt.subplots(1,1)
     ax6.plot(t1,T,'b-',label='Model')
     ax6.plot(temp[0],temp[1],'ko',label='data')
-    ax6.plot(tf[startForc:], FT4[startForc:], color = '#8B008B', ls = '-', label = 'Steam Injection = 200 t/d')
+    ax6.plot(tf[startForc:], FT4[startForc:], color = '#8B008B', ls = '-', label = 'Steam Injection = 230 t/d')
     ax6.plot(tf[startForc:], FT1[startForc:], 'y-', label = 'Todd Energy Proposed\nSteam Injection = 1000 t/d')
     ax6.plot(tf[startForc:], FT3[startForc:], color = '#00FFFF', ls = '-', label = 'Current Steam Injection = 460 t/d')
     ax6.plot(tf[startForc:], FT2[startForc:], 'g-', label = 'Steam Injection = 0 t/d')
@@ -569,8 +569,8 @@ if __name__ == "__main__":
             parsFoundP[1], pi[0], pi[1], parsFoundP[2], pi[2])
         empty3.append(max(FT3[startForc:]))
         # Forecast 4
-        # steam injection of 200 tonnes per day 60 days, followed by 90 day production periods.
-        Qf4 = Qterms(200)
+        # steam injection of 230 tonnes per day 60 days, followed by 90 day production periods.
+        Qf4 = Qterms(230)
         t, FP4 = solvePressure(tf, tf[1]-tf[0], parsFoundP[2], Qf4.giveQ, parsFoundP)
         t, FT4 = solveTemperature(tf, tf[1]-tf[0], FP4, Qf4.giveQs, parsFoundP[0],\
             parsFoundP[1], pi[0], pi[1], parsFoundP[2], pi[2])    
