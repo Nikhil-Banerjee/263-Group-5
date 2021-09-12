@@ -8,7 +8,7 @@ from numpy.core.defchararray import array
 from scipy.optimize import curve_fit
 from scipy.interpolate import interp1d
 from benchmark import*
-from functionsFinal import*
+from main import*
 
 Test_Tolerance= 1.e-10
 
