@@ -132,5 +132,6 @@ def benchmark():
     axe.set_ylabel('Pressure [Pa]')
     axe.set_xlabel('1/h')
     axe.set_title('Convergence test for Improved Euler')
-    axe.set_ylim([1.7e-5, 20e-5])
-    axe.annotate("", xy=(40, 0.000048), xytext=(40, 0.000058),arrowprops=dict(arrowstyle="->"))
+    axe.set_ylim([0, 70e-5])
+    axe.set_xlim([0, 62])
+    axe.annotate("", xy=(10, 0.000048), xytext=(10, 0.000088),arrowprops=dict(arrowstyle="->"))
