@@ -238,7 +238,7 @@ def loadData():
 if __name__ == "__main__":
     oil, pressure, steam, temp, water=loadData()
 
-    t1=np.linspace(0,217,1000)
+    t1=np.linspace(0,217,2000)
 
     # first pressure model initial guesses:
     a = 0.2
@@ -374,7 +374,7 @@ if __name__ == "__main__":
 
 
     # Forecasts:
-    tf = np.linspace(0, 370, 1705)
+    tf = np.linspace(0, 370, 3410)
     # Forecast 1
     # Tood Energy proposal of steam injection of 1000 tonnes per day 60 days, followed by 90 day production periods.
     Qf1 = Qterms(1000)
