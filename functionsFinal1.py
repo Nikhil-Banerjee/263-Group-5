@@ -236,8 +236,60 @@ def loadData():
     return oil, pressure, steam, temp, water
 
 if __name__ == "__main__":
+    # Loads given data.
     oil, pressure, steam, temp, water=loadData()
 
+    # Plots given data:
+    # Controls the colors of the plots:
+    steamCol = 'black'
+    waterCol = 'blue'
+    oilCol = '#EACE09'
+    pressureCol = 'green'
+    tempCol = 'red'
+
+    # exp2 plots
+    fa = plt.figure()
+    g2 = fa.add_gridspec(3, hspace=0.1)
+    axa = g2.subplots(sharex=True)
+    fa.suptitle('Given Data')
+
+    axa[0].plot(steam[0], steam[1], marker = 'o', linestyle = 'none', color = steamCol ,fillstyle = 'none' ,label = 'Steam Rate (t/d)')
+    axa[0].set_ylabel('Steam Rate (t/d)')
+    axa[0].legend()
+
+    l2_1a = axa[1].plot(water[0], water[1], marker = 'x', linestyle = 'none', color = waterCol, fillstyle = 'none', label = 'Water Rate (m^3/day)')
+    axa[1].set_ylabel("Water Rate (m^3/day)", color = waterCol)
+    axa[1].tick_params(axis='y', colors = waterCol)
+    axa[1].title.set_color(waterCol)
+
+    ax2twin1 = axa[1].twinx()
+    l2_1b = ax2twin1.plot(oil[0], oil[1], marker = '^', linestyle = 'none', color = oilCol, fillstyle = 'none',label = 'oil rate (m^3/day)')
+    ax2twin1.set_ylabel("Oil Rate (m^3/day)", color = oilCol)
+    ax2twin1.tick_params(axis='y', colors = oilCol)
+    ax2twin1.title.set_color(oilCol)
+
+    l2_1 = l2_1a + l2_1b
+    lab2_1 = [l.get_label() for l in l2_1]
+    axa[1].legend(l2_1, lab2_1)
+
+    l2_2a = axa[2].plot(pressure[0], pressure[1], color = pressureCol, label = 'pressure (kPa)')
+    axa[2].set_ylabel("Pressure (kPa)", color = pressureCol)
+    axa[2].tick_params(axis='y', colors = pressureCol)
+    axa[2].title.set_color(pressureCol)
+
+    ax2twin2 = axa[2].twinx()
+    l2_2b = ax2twin2.plot(temp[0], temp[1], color = tempCol, label = 'Temperature (°C)')
+    ax2twin2.set_ylabel("Temperature (°C)", color = tempCol)
+    ax2twin2.tick_params(axis='y', colors = tempCol)
+    ax2twin2.title.set_color(tempCol)
+
+    l2_2 = l2_2a + l2_2b
+    lab2_2 = [l.get_label() for l in l2_2]
+    axa[2].legend(l2_2, lab2_2)
+
+    [ax.grid() for ax in axa] 
+
+    # Initial pressure model fitting:
     t1=np.linspace(0,217,2000)
 
     # first pressure model initial guesses:
@@ -272,7 +324,7 @@ if __name__ == "__main__":
     ax9[1].set_xlabel('time [days]')
     ax9[1].set_title('Best fit LMP model')
 
-    # first Temperature model initial guess
+    # Initial Temperature model initial guess
     c = 0.1
     M = 4000
 
