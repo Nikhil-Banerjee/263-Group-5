@@ -498,8 +498,12 @@ if __name__ == "__main__":
     ax.plot(tf[startForc:], FP1[startForc:], 'y-', label = 'Todd Energy proposed steam injection = 1000 t/d')
     ax.plot(tf[startForc:], FP3[startForc:], color = '#00FFFF', ls = '-', label = 'Current steam injection = 460 t/d')
     ax.plot(tf[startForc:], FP2[startForc:], 'g-', label = 'Steam injection = 0 t/d')
-    ax.set_title('Pressure')
-    ps = np.random.multivariate_normal(parsFoundP, pcov, 150)   # samples from posterior
+    ax.set_title('Pressure Uncertainty Forecasts')
+    ax.set_xlabel('time (days)')
+    ax.set_ylabel('Pressure (Pa)')
+    ax.legend()
+
+    ps = np.random.multivariate_normal(parsFoundP, pcov, 100)   # samples from posterior
     for pi in ps:
         tsolP, P = solvePressure(t1, t1[1]-t1[0], pi[2], Q.giveQ, pi)
         # Forecast 1
@@ -524,8 +528,6 @@ if __name__ == "__main__":
         ax.plot(tf[startForc:], FP1[startForc:], 'y-', alpha=0.2, lw=0.5)
         ax.plot(tf[startForc:], FP3[startForc:], color = '#00FFFF', alpha=0.2, lw=0.5)
         ax.plot(tf[startForc:], FP2[startForc:], 'g-', alpha=0.2, lw=0.5)
-    ax.legend()  
-
 
 
     # uncertainity for temperature plot
@@ -542,7 +544,7 @@ if __name__ == "__main__":
     ax6.set_ylabel('Temperature (°C)')
     ax6.set_title('Thermal Recovery of Bitumen : Scenario Forecast')
     np.random.seed(0)
-    ts = np.random.multivariate_normal(parsFoundT, tcov, 150)   # samples from posterior
+    ts = np.random.multivariate_normal(parsFoundT, tcov, 100)   # samples from posterior
     #creating empty arrays used for the histogram and for calculating the max value of each scenario to obtain CI values
     histo=[]
     empty1=[]
@@ -602,20 +604,7 @@ if __name__ == "__main__":
     print(str(a)+','+str(b)+','+str(c)+','+str(d)+','+str(e)+','+str(f)+','+str(g)+','+str(h))
 
 
-# Plotting the Histogram 
-
-    # plt.hist(histo,bins='auto')
-    # plt.xlabel('Temperature for 1000 t/d (°C)')
-    # plt.ylabel('Probability Density')
-    # plt.title('Histogram showing 95% confidence interval for Temperature at a steam injection of 1000 t/d')
-    # # 95% confidence interval
-    # ci = np.percentile(histo,2.5)
-    # ci2 = np.percentile(histo,97.5)
-    # plt.axvline(ci,color='r',linestyle='dashed')
-    # plt.axvline(ci2,color='r',linestyle='dashed')
-    # plt.show()
-
-
+    # Plotting the Histogram 
     f10,ax10 = plt.subplots(1,1)
     ax10.hist(histo, bins = 'auto')
     ax10.set_xlabel('Temperature for 1000 t/d (°C)')
