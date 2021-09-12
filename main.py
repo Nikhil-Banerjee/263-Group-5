@@ -134,7 +134,7 @@ class Qterms:
         self.interpSteam = interp1d(steam[0], steam[1])
 
         # Storing the time values for injection end and projection end of forecasts.
-        self.forcInjecEnd = temp[0][-1] + 60
+        self.forcInjecEnd = 395 + 60
         self.forcProducEnd = self.forcInjecEnd + 90
 
         # Assigns value to be used for qs during injection period.
@@ -285,8 +285,9 @@ if __name__ == "__main__":
     [ax.grid() for ax in axa] 
 
 
+
     # Initial pressure model fitting:
-    t1=np.linspace(0,217,2170)
+    t1=np.linspace(0,395,3950)
 
     # first pressure model initial guesses:
     a = 0.2
@@ -310,8 +311,8 @@ if __name__ == "__main__":
     ax9[1].plot(pressure[0],pressureMisfit,'kx')
     ax9[1].plot(pressure[0],np.zeros(len(pressureMisfit)),'r--')
     ax9[0].plot(t1,P,'k--',label='a = {:3f}\nb = {:3f}'.format(parsFoundP[0],parsFoundP[1]))
-    ax9[0].set_xlim([0, tsolP[-1]])
-    ax9[1].set_xlim([0, tsolP[-1]])
+    ax9[0].set_xlim([0, pressure[0][-1]])
+    ax9[1].set_xlim([0, pressure[0][-1]])
     ax9[0].set_ylabel('Pressure [kPa]')
     ax9[0].set_xlabel('Time [days]')
     ax9[0].set_title('Comparison of model to observed pressure value')
@@ -341,8 +342,8 @@ if __name__ == "__main__":
     ax8[0].plot(t1, np.ones(len(t1)) * 240, 'g-', label = 'Toxic Contaminant\nDissociation Temperature')
     ax8[1].plot(temp[0],tempMisfit,'kx')
     ax8[1].plot(temp[0],temp[0]*0,'r--')
-    ax8[0].set_xlim([0, t1[-1]])
-    ax8[1].set_xlim([0, t1[-1]])
+    ax8[0].set_xlim([0, temp[0][-1]])
+    ax8[1].set_xlim([0, temp[0][-1]])
     ax8[0].set_ylabel('Temperature [°C]')
     ax8[0].set_xlabel('Time [days]')
     ax8[0].set_title('Comparison of model to observed \n temperature value')
@@ -374,8 +375,8 @@ if __name__ == "__main__":
     ax1[1].plot(pressure[0],pressureMisfit,'kx')
     ax1[1].plot(pressure[0],np.zeros(len(pressureMisfit)),'r--')
     ax1[0].plot(t1,P,'k--',label='a = {:3f}\nb = {:3f}\nP0 = {:3f}'.format(parsFoundP[0],parsFoundP[1],parsFoundP[2]))
-    ax1[0].set_xlim([0, tsolP[-1]])
-    ax1[1].set_xlim([0, tsolP[-1]])
+    ax1[0].set_xlim([0, pressure[0][-1]])
+    ax1[1].set_xlim([0, pressure[0][-1]])
     ax1[0].set_ylabel('Pressure [kPa]')
     ax1[0].set_xlabel('Time [days]')
     ax1[0].set_title('Comparison of model to observed pressure value')
@@ -406,8 +407,8 @@ if __name__ == "__main__":
     ax2[0].plot(t1, np.ones(len(t1)) * 240, 'g-', label = 'Toxic Contaminant\nDissociation Temperature')
     ax2[1].plot(temp[0],tempMisfit,'kx')
     ax2[1].plot(temp[0],temp[0]*0,'r--')
-    ax2[0].set_xlim([0, t1[-1]])
-    ax2[1].set_xlim([0, t1[-1]])
+    ax2[0].set_xlim([0, temp[0][-1]])
+    ax2[1].set_xlim([0, temp[0][-1]])
     ax2[0].set_ylabel('Temperature [°C]')
     ax2[0].set_xlabel('Time [days]')
     ax2[0].set_title('Comparison of model to observed \n temperature value')
@@ -422,7 +423,7 @@ if __name__ == "__main__":
 
 
     # Forecasts:
-    tf = np.linspace(0, 370, 3700)
+    tf = np.linspace(t1[-1], 485, 900)
     # Forecast 1
     # Tood Energy proposal of steam injection of 1000 tonnes per day 60 days, followed by 90 day production periods.
     Qf1 = Qterms(1000)
@@ -475,10 +476,10 @@ if __name__ == "__main__":
     f5, ax5 = plt.subplots(1,1)
     ax5.plot(t1, P, 'b-', label = 'Model')
     ax5.plot(pressure[0], pressure[1], 'ko', label = 'data')
-    ax5.plot(tf[startForc:], FP4[startForc:], color = '#8B008B', ls = '-', label = 'Steam Injection = 230 t/d')
-    ax5.plot(tf[startForc:], FP1[startForc:], 'y-', label = 'Todd Energy Proposed Steam Injection = 1000 t/d')
-    ax5.plot(tf[startForc:], FP3[startForc:], color = '#00FFFF', ls = '-', label = 'Current Steam Injection = 460 t/d')
-    ax5.plot(tf[startForc:], FP2[startForc:], 'g-', label = 'Steam Injection = 0 t/d')
+    ax5.plot(tf, FP4, color = '#8B008B', ls = '-', label = 'Steam Injection = 230 t/d')
+    ax5.plot(tf, FP1, 'y-', label = 'Todd Energy Proposed Steam Injection = 1000 t/d')
+    ax5.plot(tf, FP3, color = '#00FFFF', ls = '-', label = 'Current Steam Injection = 460 t/d')
+    ax5.plot(tf, FP2, 'g-', label = 'Steam Injection = 0 t/d')
     ax5.legend()
     ax5.text(x = 10, y = 130, s = 'All forecasted injection phases are 60 days, followed by 90 day production periods.', bbox = dict(facecolor='none', edgecolor='black', pad=5.0))
     ax5.set_xlim([t1[0], tf[-1]])
@@ -490,10 +491,10 @@ if __name__ == "__main__":
     fig,ax = plt.subplots(1,1)
     ax.plot(t1, P, 'b-', label = 'Model')
     ax.plot(pressure[0], pressure[1], 'ko', label = 'data')
-    ax.plot(tf[startForc:], FP4[startForc:], color = '#8B008B', ls = '-', label = 'Steam injection = 230 t/d')
-    ax.plot(tf[startForc:], FP1[startForc:], 'y-', label = 'Todd Energy Proposed Steam Injection = 1000 t/d')
-    ax.plot(tf[startForc:], FP3[startForc:], color = '#00FFFF', ls = '-', label = 'Current Steam Injection = 460 t/d')
-    ax.plot(tf[startForc:], FP2[startForc:], 'g-', label = 'Steam Injection = 0 t/d')
+    ax.plot(tf, FP4, color = '#8B008B', ls = '-', label = 'Steam injection = 230 t/d')
+    ax.plot(tf, FP1, 'y-', label = 'Todd Energy Proposed Steam Injection = 1000 t/d')
+    ax.plot(tf, FP3, color = '#00FFFF', ls = '-', label = 'Current Steam Injection = 460 t/d')
+    ax.plot(tf, FP2, 'g-', label = 'Steam Injection = 0 t/d')
     ax.set_title('Pressure Uncertainty Forecasts')
     ax.set_xlabel('Time (days)')
     ax.set_ylabel('Pressure (kPa)')
@@ -520,10 +521,10 @@ if __name__ == "__main__":
         t, FP4 = solvePressure(tf, tf[1]-tf[0], pi[2], Qf4.giveQ, pi)
         #plotting commands
         ax.plot(tsolP, P, 'b-', alpha=0.2, lw=0.5)
-        ax.plot(tf[startForc:], FP4[startForc:], color = '#8B008B', alpha=0.2, lw=0.5)
-        ax.plot(tf[startForc:], FP1[startForc:], 'y-', alpha=0.2, lw=0.5)
-        ax.plot(tf[startForc:], FP3[startForc:], color = '#00FFFF', alpha=0.2, lw=0.5)
-        ax.plot(tf[startForc:], FP2[startForc:], 'g-', alpha=0.2, lw=0.5)
+        ax.plot(tf, FP4, color = '#8B008B', alpha=0.2, lw=0.5)
+        ax.plot(tf, FP1, 'y-', alpha=0.2, lw=0.5)
+        ax.plot(tf, FP3, color = '#00FFFF', alpha=0.2, lw=0.5)
+        ax.plot(tf, FP2, 'g-', alpha=0.2, lw=0.5)
 
 
     # uncertainity for temperature plot
@@ -531,10 +532,10 @@ if __name__ == "__main__":
     fig,ax6 = plt.subplots(1,1)
     ax6.plot(t1,T,'b-',label='Model')
     ax6.plot(temp[0],temp[1],'ko',label='data')
-    ax6.plot(tf[startForc:], FT4[startForc:], color = '#8B008B', ls = '-', label = 'Steam Injection = 230 t/d')
-    ax6.plot(tf[startForc:], FT1[startForc:], 'y-', label = 'Todd Energy Proposed\nSteam Injection = 1000 t/d')
-    ax6.plot(tf[startForc:], FT3[startForc:], color = '#00FFFF', ls = '-', label = 'Current Steam Injection = 460 t/d')
-    ax6.plot(tf[startForc:], FT2[startForc:], 'g-', label = 'Steam Injection = 0 t/d')
+    ax6.plot(tf, FT4, color = '#8B008B', ls = '-', label = 'Steam Injection = 230 t/d')
+    ax6.plot(tf, FT1, 'y-', label = 'Todd Energy Proposed\nSteam Injection = 1000 t/d')
+    ax6.plot(tf, FT3, color = '#00FFFF', ls = '-', label = 'Current Steam Injection = 460 t/d')
+    ax6.plot(tf, FT2, 'g-', label = 'Steam Injection = 0 t/d')
     ax6.plot(tOverall,np.ones(len(tOverall)) * 240,'r-', label =  'Toxic Contaminant\nDissociation Temperature')
     ax6.set_xlabel('Time (Days)')
     ax6.set_ylabel('Temperature (°C)')
@@ -554,7 +555,7 @@ if __name__ == "__main__":
         t, FP1 = solvePressure(tf, tf[1]-tf[0], parsFoundP[2], Qf1.giveQ, parsFoundP)
         t, FT1 = solveTemperature(tf, tf[1]-tf[0], FP1, Qf1.giveQs, parsFoundP[0],\
             parsFoundP[1], pi[0], pi[1], parsFoundP[2], pi[2])
-        empty1.append(max(FT1[startForc:]))
+        empty1.append(max(FT1))
         histo.append(max(FT1))
         # Forecast 2
         # No steam injection
@@ -562,27 +563,27 @@ if __name__ == "__main__":
         t, FP2 = solvePressure(tf, tf[1]-tf[0], parsFoundP[2], Qf2.giveQ, parsFoundP)
         t, FT2 = solveTemperature(tf, tf[1]-tf[0], FP2, Qf2.giveQs, parsFoundP[0],\
             parsFoundP[1], pi[0], pi[1], parsFoundP[2], pi[2])
-        empty2.append(max(FT2[startForc:]))
+        empty2.append(max(FT2))
         # Forecast 3
         # Current steam injection of 460 tonnes per day for 60 days, followed by 90 day production periods.
         Qf3 = Qterms(460)
         t, FP3 = solvePressure(tf, tf[1]-tf[0], parsFoundP[2], Qf3.giveQ, parsFoundP)
         t, FT3 = solveTemperature(tf, tf[1]-tf[0], FP3, Qf3.giveQs, parsFoundP[0],\
             parsFoundP[1], pi[0], pi[1], parsFoundP[2], pi[2])
-        empty3.append(max(FT3[startForc:]))
+        empty3.append(max(FT3))
         # Forecast 4
         # steam injection of 230 tonnes per day 60 days, followed by 90 day production periods.
         Qf4 = Qterms(230)
         t, FP4 = solvePressure(tf, tf[1]-tf[0], parsFoundP[2], Qf4.giveQ, parsFoundP)
         t, FT4 = solveTemperature(tf, tf[1]-tf[0], FP4, Qf4.giveQs, parsFoundP[0],\
             parsFoundP[1], pi[0], pi[1], parsFoundP[2], pi[2])    
-        empty4.append(max(FT4[startForc:]))
+        empty4.append(max(FT4))
         #plotting commands
         ax6.plot(tsolT, T, 'b-', alpha=0.2, lw=0.5)
-        ax6.plot(tf[startForc:], FT4[startForc:], color = '#8B008B', alpha=0.2, lw=0.5)
-        ax6.plot(tf[startForc:], FT1[startForc:], 'y-', alpha=0.2, lw=0.5)
-        ax6.plot(tf[startForc:], FT3[startForc:], color = '#00FFFF', alpha=0.2, lw=0.5)
-        ax6.plot(tf[startForc:], FT2[startForc:], 'g-', alpha=0.2, lw=0.5)
+        ax6.plot(tf, FT4, color = '#8B008B', alpha=0.2, lw=0.5)
+        ax6.plot(tf, FT1, 'y-', alpha=0.2, lw=0.5)
+        ax6.plot(tf, FT3, color = '#00FFFF', alpha=0.2, lw=0.5)
+        ax6.plot(tf, FT2, 'g-', alpha=0.2, lw=0.5)
         tsolT, T = solveTemperature(t1, t1[1]-t1[0], P, Q.giveQs, parsFoundP[0],\
         parsFoundP[1], pi[0], pi[1], parsFoundP[2], pi[2])
         ax6.plot(t1,T,'b-',alpha=0.2,lw=0.5)
