@@ -290,7 +290,7 @@ if __name__ == "__main__":
 
 
     # Initial pressure model fitting:
-    t1=np.linspace(0,455,3950)
+    t1=np.linspace(0,455,4550)
 
     # first pressure model initial guesses:
     a = 0.2
@@ -426,7 +426,7 @@ if __name__ == "__main__":
 
 
     # Forecasts:
-    tf = np.linspace(t1[-1], 605, 900)
+    tf = np.linspace(t1[-1], 605, 1500)
     # Forecast 1
     # Tood Energy proposal of steam injection of 1000 tonnes per day 60 days, followed by 90 day production periods.
     Qf1 = Qterms(1000)
