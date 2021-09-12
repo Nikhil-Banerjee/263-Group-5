@@ -268,6 +268,7 @@ if __name__ == "__main__":
 
     l2_2a = axa[2].plot(pressure[0], pressure[1], color = pressureCol, label = 'Pressure (kPa)')
     axa[2].set_ylabel("Pressure (kPa)", color = pressureCol)
+    axa[2].set_xlabel("time (days)")
     axa[2].tick_params(axis='y', colors = pressureCol)
     axa[2].title.set_color(pressureCol)
 
@@ -282,6 +283,7 @@ if __name__ == "__main__":
     axa[2].legend(l2_2, lab2_2)
 
     [ax.grid() for ax in axa] 
+
 
     # Initial pressure model fitting:
     t1=np.linspace(0,217,2170)
